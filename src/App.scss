@@ -1,0 +1,41 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: .8rem;
+}
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+  width: 90%;
+  margin: 0 auto;
+  @media screen and (min-width: 700px) {
+    width: 80%;
+    max-width: 1000px;
+  }
+  label {
+    margin-right: 1rem;
+  }
+  input {
+    font-family: 'Open Sans', sans-serif;
+    min-width: 8rem;
+    padding: .3rem;
+    border: 1px solid lightgrey;
+    outline: none;
+   &::placeholder {
+     color: lightgrey;
+   };
+  }
+  .css-1yhpg23-MuiTableCell-root {
+    border-bottom: none;
+  }
+  .css-rorn0c-MuiTableContainer-root {
+    display: flex;
+    justify-content: center;
+  }
+}
