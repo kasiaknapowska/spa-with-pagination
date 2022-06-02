@@ -16,7 +16,7 @@ body {
   margin: 0 auto;
   @media screen and (min-width: 700px) {
     width: 80%;
-    max-width: 1000px;
+    max-width: 600px;
   }
   label {
     margin-right: 1rem;
@@ -34,8 +34,6 @@ body {
   .css-1yhpg23-MuiTableCell-root {
     border-bottom: none;
   }
-  .css-rorn0c-MuiTableContainer-root {
-    display: flex;
-    justify-content: center;
-  }
+ 
+
 }

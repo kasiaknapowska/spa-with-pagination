@@ -1,77 +1,54 @@
 import "./App.scss";
 import { useState, useEffect } from "react";
 import { getData } from "./API/fetchFunc";
-import Table from "@mui/material/Table";
-import TableContainer from "@mui/material/TableContainer";
-import { TableRow, TableCell, TableBody } from "@mui/material";
+import Filter from "./Components/Filter";
+import Products from "./Components/Products";
 
-function App() {
-  const [products, setProducts] = useState(null);
-  const [filterById, setFilterById] = useState("");
+export default function App() {
+  const [products, setProducts] = useState([]);
+  const [productsToDisplay, setProductsToDisplay] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(0);
+  const [emptyRows, setEmptyRows] = useState(0);
 
   useEffect(() => {
-    getData((data) => setProducts(data.data));
+    getData((data) => {
+      setProducts(data.data);
+      setProductsToDisplay(data.data);
+      setRowsPerPage(data.per_page - 1);
+    });
     setIsLoading(false);
   }, []);
 
-  console.log(products);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  useEffect(() => {
+    setEmptyRows(
+      rowsPerPage -
+        Math.min(rowsPerPage, productsToDisplay.length - page * rowsPerPage)
+    );
+  }, [productsToDisplay, page]);
 
   return (
     <div className="App">
-      <div className="filter">
-        <label>Filter by ID</label>
-        <input
-          type="number"
-          min="0"
-          max={products && products.length}
-          name="id"
-          value={filterById}
-          placeholder="Write down ID"
-          onChange={(e) => setFilterById(e.target.value)}
-        />
-      </div>
+      <Filter
+        products={products}
+        setProductsToDisplay={setProductsToDisplay}
+        setPage={setPage}
+      />
       {isLoading && <p>Loading...</p>}
       {!isLoading && (
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 200, maxWidth: 600, marginTop: "2rem" }}
-            aria-label="simple table"
-          >
-            <TableBody>
-              {products &&
-                products
-                  .filter((product) => {
-                    if (!filterById || filterById === "0") {
-                      return product;
-                    } else {
-                      return product.id === parseInt(filterById);
-                    }
-                  })
-                  .map((product) => {
-                    return (
-                      <TableRow
-                        key={product.id}
-                        style={{ backgroundColor: product.color }}
-                      >
-                        <TableCell align="center" style={{ color: "white" }}>
-                          {product.id}
-                        </TableCell>
-                        <TableCell align="center" style={{ color: "white" }}>
-                          {product.name}
-                        </TableCell>
-                        <TableCell align="center" style={{ color: "white" }}>
-                          {product.year}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <Products
+          productsToDisplay={productsToDisplay}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          emptyRows={emptyRows}
+          handleChangePage={handleChangePage}
+        />
       )}
     </div>
   );
 }
-
-export default App;
