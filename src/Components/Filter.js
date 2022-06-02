@@ -1,21 +1,25 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { setProductsToDisplay } from "../Redux/changeProductsSlice";
 
-export default function Filter({ products, setProductsToDisplay, setPage }) {
+export default function Filter({ setPage }) {
   const [filteredId, setFilteredId] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.changeProducts.products);
 
   const filterById = (e) => {
     setFilteredId(e.target.value);
     setPage(0);
     if (e.target.value === "0") {
-      setProductsToDisplay(products);
+      dispatch(setProductsToDisplay(products));
       navigate("/");
     } else {
       const index = products.findIndex(
         (el) => el.id === parseInt(e.target.value)
       );
-      setProductsToDisplay(products.slice(index, index + 1));
+      dispatch(setProductsToDisplay(products.slice(index, index + 1)));
       navigate(`id-${e.target.value}`, { replace: true });
     }
   };
@@ -26,7 +30,7 @@ export default function Filter({ products, setProductsToDisplay, setPage }) {
       <input
         type="number"
         min="0"
-        max={products.length}
+        max={products && products.length}
         name="id"
         value={filteredId}
         placeholder="Write down ID"
