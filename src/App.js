@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { getData } from "./API/fetchFunc";
 import Filter from "./Components/Filter";
 import Products from "./Components/Products";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function App() {
   const [products, setProducts] = useState([]);
@@ -11,6 +12,10 @@ export default function App() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(0);
   const [emptyRows, setEmptyRows] = useState(0);
+
+  const navigate = useNavigate();
+  const { param } = useParams();
+
 
   useEffect(() => {
     getData((data) => {
@@ -23,6 +28,11 @@ export default function App() {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    if (newPage === 0) {
+      navigate("/");
+    } else {
+      navigate(`pg-${newPage + 1}`, { replace: true });
+    }
   };
 
   useEffect(() => {
@@ -31,6 +41,17 @@ export default function App() {
         Math.min(rowsPerPage, productsToDisplay.length - page * rowsPerPage)
     );
   }, [productsToDisplay, page]);
+
+
+  useEffect(() => {
+    if (param && param.slice(0, 3) === "id-") {
+      setProductsToDisplay(products.filter(el => el.id === parseInt(param.slice(3))));
+    } else if (param && param.slice(0, 3) === "pg-" && param.slice(3) <= 2) {
+      setPage(parseInt(param.slice(3)) - 1)
+    }
+    
+  }, [param, products])
+
 
   return (
     <div className="App">
